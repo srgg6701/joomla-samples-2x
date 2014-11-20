@@ -108,18 +108,16 @@ $(function(){
           .each(function(index,element){
             var tr=$(element).parents('tr'),
                 user_id=$('td:first-child', tr).text(),
-                current_group = $(element).val(),
-                old_group_id = $(element).parent().prev().attr('data-group-id'),
-                groups = [old_group_id,current_group];
-            //console.dir(tr);
+                groups = [  $(element).parent().prev().attr('data-group-id'),
+                            $(element).val()
+                         ];
 
             if(!usersData[user_id]){
                 usersData[user_id]=[groups];
             }else{
                 usersData[user_id].push(groups);
             }
-        });
-        console.dir(usersData);
+        }); //console.dir(usersData);
         $.post(
             "index.php?option=com_sample",
         {
@@ -127,7 +125,27 @@ $(function(){
             users:JSON.stringify(usersData)
         },
         function(data){
-            console.log(data);
+            var rslts = JSON.parse(data),
+                results = rslts['results'],
+                errors = rslts['errors'];
+            //console.dir(results);
+            if(results.length){
+                for(var i in results){
+                    var obj = results[i];
+                    if(typeof(obj)==='object' && obj!==null){
+                        console.dir(obj);
+                    }
+                    //if(key=='results')
+                }
+            }
+            if(errors.length){
+                for(var i in errors){
+                    var obj = errors[i];
+                    if(typeof(obj)==='object' && obj!==null){
+                        console.dir(obj);
+                    }
+                }
+            }
         });
     });
 });

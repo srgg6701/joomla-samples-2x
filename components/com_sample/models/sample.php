@@ -26,7 +26,7 @@ class SampleModelSample extends JModelLegacy
      */
     public function manageUserGroups($users_data){
         $users = json_decode($users_data);
-        var_dump('<pre>',$users,'</pre>');
+        //var_dump('<pre>',$users,'</pre>');
         //object(stdClass)#157 (2)
           /*["586"]=>
           array(2) {
@@ -56,19 +56,100 @@ class SampleModelSample extends JModelLegacy
               string(1) "3"
             }
           }*/
-
         $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
+        $errors=$results=array();
+        $table_name = '#__user_usergroup_map';
         foreach($users as $user_id=>$user_groups){
+            // получить колич. групп юзера
+            $query = $db->getQuery(true);
+            $query->select('COUNT(*)')
+                ->from($table_name)
+                ->where('user_id = ' . $user_id);
+            $db->setQuery($query);
+            $count_user_groups = $db->loadResult();
+            $deleted=0; // счётчик удалённых групп юзера
+            //echo "\n" . __FILE__ . ':' . __LINE__ . "\n";var_dump($user_groups);echo "\n*****************\n";
+            /*
+                array(1) {
+                  [0]=>
+                  array(2) {
+                    [0]=>
+                    string(1) "2"
+                    [1]=>
+                    string(2) "-1"
+                  }
+                }
+                array(2) {
+                  [0]=>
+                  array(2) {
+                    [0]=>
+                    string(1) "2"
+                    [1]=>
+                    string(1) "3"
+                  }
+                  [1]=>
+                  array(2) {
+                    [0]=>
+                    string(1) "3"
+                    [1]=>
+                    string(1) "2"
+                  }
+                }
+            */
             foreach($user_groups as $i=>$groups) {
+                //echo "\n" . __FILE__ . ':' . __LINE__ . "\ngroups:\n";var_dump($groups);echo "\n*****************\n";
                 // 0 - id старой группы
                 // 1 - id новой группы
-                $query->select('COUNT(*)')
-                    ->from('#__usergroups')
-                    ->where('user_id = ' . $user_id . ' AND group_id = ' . $groups[0]);
-
+                $condition = 'user_id = ' . $user_id . ' AND group_id = ' . $groups[0];
+                if($groups[1]=='-1'){ // удалить группу
+                    //echo "\nDelete group!\n";
+                    if($count_user_groups>1){ // если групп более 1, тогда можно удалять
+                        // и если удалено меньше, чем всего групп юзера +1
+                        if($deleted<$count_user_groups-1){
+                            $query = $db->getQuery(true);
+                            $query->delete($table_name)->where($condition);
+                            $db->setQuery($query);
+                            // $result = $db->execute();
+                            $deleted++;
+                            $results[]=array('user_id'=>$user_id,'deleted'=>$groups[0]);
+                                //"Deleted group $groups[0] of user $user_id";
+                            //$errors[]=null;
+                        }else{
+                            $results[]=null;
+                            $errors[]="Can not delete the last group";
+                        }
+                    }else{
+                        $results[]=null;
+                        $errors[]="Can not delete the single group";
+                    }
+                }else{ // обновить
+                    //echo "\nUpdate group!\n";
+                    $query = $db->getQuery(true);
+                    $query->select('COUNT(*)')
+                        ->from($table_name)
+                        ->where($condition);
+                    $db->setQuery($query);
+                    //echo "\nSELECT COUNT(*) FROM $table_name WHERE $condition\n result: " . $db->loadResult() . "\n";
+                    if($db->loadResult()){
+                        //echo "<div>The record exists</div>\n";
+                        $query = $db->getQuery(true);
+                        $query->update($table_name)
+                            ->set('group_id = ' . $groups[1])
+                            ->where($condition);
+                        $db->setQuery($query);
+                        // $result = $db->execute();
+                        $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
+                        //"Group of user $user_id has changed from $groups[0] to $groups[1]";
+                        //$errors[]=null;
+                    }else{
+                        $results[]=null;
+                        $errors[]="The record DOES NOT exists";
+                    }
+                }
             }
         }
+        //echo "\n" . __FILE__ . ':' . __LINE__ . "\n";var_dump($results);echo "\n*****************\n"; die();
+        return array('results'=>$results, 'errors'=>$errors);
     }
 
     /**

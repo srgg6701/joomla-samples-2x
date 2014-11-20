@@ -2,9 +2,6 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
  
-// import Joomla controller library
-//jimport('joomla.application.component.controller');
- 
 /**
  * Sample Controller
  */
@@ -45,8 +42,7 @@ class SampleController extends JControllerLegacy
      */
     public function change_user_group(){
         $post=JRequest::get('post');
-        //echo
-        $this->getModel()->manageUserGroups($post['users']);
+        echo json_encode($this->getModel()->manageUserGroups($post['users']));
         exit;
     }
 }
