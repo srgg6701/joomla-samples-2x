@@ -15,17 +15,13 @@ class SampleViewDefault extends JView
 	{
         $this->state	= $this->get('State');
 		$this->params	= $this->state->get('params');
-        $this->users    = $this->getUsers();
-
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
 		}
-        //echo "<pre>" . __FILE__ . ':' . __LINE__ . '<br>';var_dump($this);echo "</pre>";
-        //echo 'layout: ' .$this->layout; die();
 
-		$clear_params=str_replace('"','',$this->item->params);
+        $clear_params=str_replace('"','',$this->item->params);
 		$pg_params=explode(",",$clear_params);
 		foreach($pg_params as $couple){
 			$arrPar=explode(":",$couple);
@@ -41,17 +37,6 @@ class SampleViewDefault extends JView
 		// Display the view
 		parent::display($tpl);
 	}
-
-    /**
-     * Получим реальных юзеров
-     * @return object
-     */
-    public function getUsers(){
-        require_once JPATH_ADMINISTRATOR .DS. 'components' .DS.'com_users'.DS.'models'.DS.'users.php';
-        $model=new UsersModelUsers();
-        return $model->getItems();
-    }
-
     protected function prepareDocument()
 	{
 		$app		= JFactory::getApplication();

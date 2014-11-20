@@ -10,14 +10,7 @@ defined('_JEXEC') or die('Restricted access');
  */
 class SampleController extends JControllerLegacy
 {
-	/*public function __construct(){
-        echo "Constructor works!";
-        $this->display();
-    }*/
-    /*public function getUsers(){
-        die('line: ' . __LINE__);
-    }*/
-    /**
+	/**
 	 * Method to display a view.
 	 *
 	 * @param	boolean			If true, the view output will be cached
@@ -39,8 +32,27 @@ class SampleController extends JControllerLegacy
             $model = $this->getModel('Sample');
 			$view->setModel($model, true);
             $view->setLayout($lName);
+            // если раздел по умолчанию, получим реальных юзеров:
+            if($lName==='default'){
+                require_once JPATH_ADMINISTRATOR .DS. 'components' .DS.'com_users'.DS.'models'.DS.'users.php';
+                $model_users=new UsersModelUsers();
+                $view->users=$model_users->getItems();
+                $view->usergroups=$this->getUsersGroup();
+            }
 			$view->assignRef('document', $document);
 			$view->display();
 		}
-	}	
+	}
+
+    /**
+     * Получим список групп юзеров
+     * @return array
+     */
+    private function getUsersGroup(){
+        $db =JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('id, title')->from('#__usergroups');
+        $db->setQuery($query);
+        return $db->loadObjectList();
+    }
 }
