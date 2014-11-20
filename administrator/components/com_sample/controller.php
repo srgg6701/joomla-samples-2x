@@ -6,9 +6,9 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @author      srgg <srgg67@gmail.com> - http://www.facebook.com/srgg67
  */
-require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."tables".DS."table_name.php";
+require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."tables".DS."users_forum.php";
 
-require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."helpers".DS."helper_name.php";
+require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."helpers".DS."default.php";
 // No direct access
 defined('_JEXEC') or die;
 

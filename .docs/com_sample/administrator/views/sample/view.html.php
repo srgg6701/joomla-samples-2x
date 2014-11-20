@@ -52,7 +52,7 @@ class SampleViewSample extends JView
 	 */
 	protected function addToolbar($layout=false)
 	{	
-		require_once JPATH_COMPONENT . '/helpers/helper_name.php';
+		require_once JPATH_COMPONENT . '/helpers/default.php';
 
 		$canDo = SampleHelper::getActions($this->state->get('filter.category_id'));
 		$user = JFactory::getUser();

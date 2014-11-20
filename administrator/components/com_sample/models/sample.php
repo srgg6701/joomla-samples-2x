@@ -21,7 +21,7 @@ jimport('joomla.application.component.modellist');
  */
 class SampleModelSample extends JModelList
 {
-	/**
+    /**
 	 * Constructor.
 	 *
 	 * @param   array	An optional associative array of configuration settings.
@@ -30,7 +30,7 @@ class SampleModelSample extends JModelList
 	 * @since   1.6
 	 * Также указывает столбцы сортировки данных
 	 */
-	public function __construct($config = array())
+	/*public function __construct($config = array())
 	{
 		if (empty($config['filter_fields']))
 		{	
@@ -40,7 +40,7 @@ class SampleModelSample extends JModelList
 			);
 		}
 		parent::__construct($config);
-	}
+	}*/
 	/**
 	 * Overrides the getItems method to attach additional metrics to the list.
 	 *
@@ -48,7 +48,7 @@ class SampleModelSample extends JModelList
 	 *
 	 * @since   1.6.1
 	 */
-	public function getItems()
+	/*public function getItems()
 	{			
 
 		// Get a storage key.
@@ -70,7 +70,7 @@ class SampleModelSample extends JModelList
 		// Add the items to the internal cache.
 		$this->cache[$store] = $items;
 		return $this->cache[$store];
-	}
+	}*/
 
 	/**
 	 * Method to build an SQL query to load the list data.
@@ -79,7 +79,7 @@ class SampleModelSample extends JModelList
 	 *
 	 * @since   1.6
 	 */
-	protected function getListQuery()
+	/*protected function getListQuery()
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
@@ -87,11 +87,11 @@ class SampleModelSample extends JModelList
 
 		// Select all fields from the table.
 		$query->select($this->getState('list.select', 'a.*'));
-		$query->from($db->quoteName('#__db_table_name').' AS a');
+		$query->from($db->quoteName('#__users_forum').' AS a');
 		// Add the list ordering clause.
 		$query->order($db->getEscaped($this->getState('filter_order')) . ' ' . $db->getEscaped($this->getState('filter_order_Dir', 'ASC')));
 		return $query;
-	}
+	}*/
 
 	/**
 	 * Method to auto-populate the model state.
@@ -107,7 +107,7 @@ class SampleModelSample extends JModelList
 	 * Также имеет отношение к сортировке отображения данных. 
 	 * См. здесь: http://docs.joomla.org/Adding_sortable_columns_to_a_table_in_a_component
 	 */
-	protected function populateState($ordering = null, $direction = null)
+	/*protected function populateState($ordering = null, $direction = null)
 	{
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
@@ -119,5 +119,5 @@ class SampleModelSample extends JModelList
         $this->setState('filter_order_Dir', $filter_order_Dir);
 		// List state information.
 		parent::populateState('a.id', 'asc');
-	}
+	}*/
 }

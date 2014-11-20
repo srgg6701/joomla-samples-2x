@@ -22,6 +22,49 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
 class SampleModelSample extends JModelLegacy
 {
     /**
+     * Обработать запрос изменения группы юзера
+     */
+    public function manageUserGroups($users_data){
+        // {"584":["3"],"589":["5","6"]}
+        $users = json_decode($users_data);
+        /*object(stdClass)#157 (2) {
+          ["584"]=>
+          array(1) {
+            [0]=>
+            string(1) "2"
+          }
+          ["585"]=>
+          array(2) {
+            [0]=>
+            string(1) "3"
+            [1]=>
+            string(1) "5"
+          }
+        }*/
+        /*
+        $query->select('ug.title,
+  usrs_forum.id AS forum_user_id,
+  users.id AS user_id,
+  users.name,
+  users.username,
+  users.email')
+            ->from('#__usergroups AS ug')
+            ->innerJoin('#__user_usergroup_map AS ugmp ON ug.id = ugmp.group_id')
+            ->innerJoin('#__users AS users ON ugmp.user_id = users.id')
+            ->innerJoin('#__users_forum AS usrs_forum ON usrs_forum.user_id = users.id')
+            ->order('ugmp.group_id');
+        $db->setQuery($query);
+        $users=$db->loadObjectList();*/
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        foreach($users as $user_id=>$user_groups){
+            $query->select('group_id')
+                ->from('#__usergroups')
+                ->where('user_id = ' . $user_id);
+        }
+    }
+
+    /**
 	 * Model context string.
 	 *
 	 * @var		string
@@ -33,7 +76,7 @@ class SampleModelSample extends JModelLegacy
 	 * @return	object
 	 */
 
-	/*function getItem()
+	function getItem()
 	{
 		if (!isset($this->_item))
 		{
@@ -51,7 +94,7 @@ class SampleModelSample extends JModelLegacy
 			}
 		}
 		return $this->_item;
-	}*/
+	}
 
 	/**
 	 * Method to auto-populate the model state.
@@ -68,5 +111,4 @@ class SampleModelSample extends JModelLegacy
 		$params = $app->getParams();
 		$this->setState('params', $params);
 	}
-
 }

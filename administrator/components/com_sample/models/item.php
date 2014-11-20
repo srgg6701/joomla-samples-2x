@@ -33,7 +33,7 @@ class SampleModelItem extends JModelAdmin
 	 * @return	JTable	A database object
 	 * @since	1.6
 	 */
-	public function getTable($type = 'Table_name', $prefix = 'SampleTable', $config = array())
+	public function getTable($type = 'Users_forum', $prefix = 'SampleTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -107,7 +107,7 @@ class SampleModelItem extends JModelAdmin
 			// Set ordering to the last item if not set
 			if (@$table->ordering === '') {
 				$db = JFactory::getDbo();
-				$db->setQuery('SELECT MAX(id) FROM #__db_table_name');
+				$db->setQuery('SELECT MAX(id) FROM #__users_forum');
 				$max = $db->loadResult();
 				$table->ordering = $max+1;
 			}

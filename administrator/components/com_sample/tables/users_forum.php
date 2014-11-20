@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 /**
  * customers Table class
  */
-class SampleTableDb_table_name extends JTable
+class SampleTableUsers_forum extends JTable
 {
 	/**
 	 * Constructor
@@ -22,6 +22,6 @@ class SampleTableDb_table_name extends JTable
 	 */
 	public function __construct(&$db)
 	{
-		parent::__construct('#__db_table_name', 'id', $db);
+		parent::__construct('#__users_forum', 'id', $db);
 	}
 }

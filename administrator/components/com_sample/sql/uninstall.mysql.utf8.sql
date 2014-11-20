@@ -1,4 +1,4 @@
 -- $Id: uninstall.mysql.utf8.sql date
 
--- DROP TABLE IF EXISTS `#__db_table_name`;
+-- DROP TABLE IF EXISTS `#__users_forum`;
 

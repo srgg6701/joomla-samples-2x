@@ -8,7 +8,7 @@
  */
 require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."tables".DS."table_name.php";
 
-require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."helpers".DS."helper_name.php";
+require_once JPATH_ADMINISTRATOR.DS.'components'.DS.'com_sample'.DS."helpers".DS."default.php";
 // No direct access
 defined('_JEXEC') or die;
 
