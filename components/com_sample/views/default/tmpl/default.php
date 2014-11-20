@@ -41,11 +41,18 @@ defined('_JEXEC') or die('Restricted access');
         margin-top: 4px;
         padding: 4px 10px;
     }
+    #result-message{
+        background-color: lavender;
+        clear: both;
+        float: left;
+        margin-top: 10px;
+        padding: 10px;
+    }
 </style><?php  //var_dump($this->users); ?>
 <h2>Юзеры форума</h2>
 <div>(также отображены их данные как обычных пользователей системы)</div>
 <p>Клацните по группе юзера, чтобы выбрать ей достойную замену.</p>
-<div class="container-div">
+<div class="container-div" id="table-container">
     <table class="common">
         <tr>
             <th>user id</th>
@@ -128,7 +135,16 @@ $(function(){
             var rslts = JSON.parse(data),
                 results = rslts['results'],
                 errors = rslts['errors'];
-            //console.dir(results);
+            //console.group();console.dir(rslts);console.log(results.length,errors.length);console.groupEnd();
+            // удалить контейнер с сообщением
+            var rmess_id = 'result-message';
+            $('#'+rmess_id).remove();
+            // создать новый контейнер для сообщений
+            var rmess = $('<div/>',{
+                id:rmess_id
+            });
+            $('#table-container').append(rmess);
+
             if(results.length){
                 for(var i in results){
                     var obj = results[i];
@@ -139,10 +155,20 @@ $(function(){
                 }
             }
             if(errors.length){
+                var str_end = ' группу юзера id ';
+                //
                 for(var i in errors){
                     var obj = errors[i];
                     if(typeof(obj)==='object' && obj!==null){
-                        console.dir(obj);
+                        //console.dir(obj);
+                        if(obj[1]==='l'){
+                            $(rmess).append('<div class="mess-err">Нельзя удалить последнюю'+str_end+obj[0]+'</div>');
+                            //console.log('Нельзя удалить последнюю'+str_end+obj[0]);
+                        }
+                        if(obj[1]==='s'){
+                            $(rmess).append('<div class="mess-err">Нельзя удалить единственную'+str_end+obj[0]+'</div>');
+                            //console.log('Нельзя удалить единственную'+str_end+obj[0]);
+                        }
                     }
                 }
             }

@@ -115,12 +115,12 @@ class SampleModelSample extends JModelLegacy
                                 //"Deleted group $groups[0] of user $user_id";
                             //$errors[]=null;
                         }else{
-                            $results[]=null;
-                            $errors[]="Can not delete the last group";
+                            //$results[]=null;
+                            $errors[]=array($user_id,"l");
                         }
                     }else{
-                        $results[]=null;
-                        $errors[]="Can not delete the single group";
+                        //$results[]=null;
+                        $errors[]=array($user_id,"s");
                     }
                 }else{ // обновить
                     //echo "\nUpdate group!\n";
@@ -142,8 +142,8 @@ class SampleModelSample extends JModelLegacy
                         //"Group of user $user_id has changed from $groups[0] to $groups[1]";
                         //$errors[]=null;
                     }else{
-                        $results[]=null;
-                        $errors[]="The record DOES NOT exists";
+                        //$results[]=null;
+                        $errors[]=array($user_id,"n");
                     }
                 }
             }
