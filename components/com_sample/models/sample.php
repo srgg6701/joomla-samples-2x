@@ -21,7 +21,7 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
  */
 class SampleModelSample extends JModelLegacy
 {
-	/**
+    /**
 	 * Model context string.
 	 *
 	 * @var		string
@@ -33,7 +33,7 @@ class SampleModelSample extends JModelLegacy
 	 * @return	object
 	 */
 
-	function getItem()
+	/*function getItem()
 	{
 		if (!isset($this->_item))
 		{
@@ -51,7 +51,7 @@ class SampleModelSample extends JModelLegacy
 			}
 		}
 		return $this->_item;
-	}
+	}*/
 
 	/**
 	 * Method to auto-populate the model state.

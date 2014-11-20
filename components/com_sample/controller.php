@@ -10,7 +10,14 @@ defined('_JEXEC') or die('Restricted access');
  */
 class SampleController extends JControllerLegacy
 {
-	/**
+	/*public function __construct(){
+        echo "Constructor works!";
+        $this->display();
+    }*/
+    /*public function getUsers(){
+        die('line: ' . __LINE__);
+    }*/
+    /**
 	 * Method to display a view.
 	 *
 	 * @param	boolean			If true, the view output will be cached
@@ -20,7 +27,9 @@ class SampleController extends JControllerLegacy
 	 * @since	1.5
 	 */
 	public function display($cachable = false, $urlparams = false)
-	{	// Get the document object.
+	{
+	    //var_dump(debug_print_backtrace()); die();
+	    // Get the document object.
 		$document	= JFactory::getDocument();
 		// Set the default view name and format from the Request.
 		$vName	 = JRequest::getCmd('view', 'default'); // default
@@ -29,7 +38,7 @@ class SampleController extends JControllerLegacy
         if ($view = $this->getView($vName, $vFormat)) {
             $model = $this->getModel('Sample');
 			$view->setModel($model, true);
-			$view->setLayout($lName);
+            $view->setLayout($lName);
 			$view->assignRef('document', $document);
 			$view->display();
 		}

@@ -12,17 +12,18 @@ class SampleViewDefault extends JView
 {
 	// Overwriting JView display method
 	function display($tpl = null) 
-	{	// Get the view data FROM model.
-		//$this->user		= JFactory::getUser();
-		//$this->form		= $this->get('Form');
-		$this->state	= $this->get('State');
+	{
+        $this->state	= $this->get('State');
 		$this->params	= $this->state->get('params');
+        $this->users    = $this->getUsers();
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
 		}
+        //echo "<pre>" . __FILE__ . ':' . __LINE__ . '<br>';var_dump($this);echo "</pre>";
+        //echo 'layout: ' .$this->layout; die();
 
 		$clear_params=str_replace('"','',$this->item->params);
 		$pg_params=explode(",",$clear_params);
@@ -40,7 +41,18 @@ class SampleViewDefault extends JView
 		// Display the view
 		parent::display($tpl);
 	}
-	protected function prepareDocument()
+
+    /**
+     * Получим реальных юзеров
+     * @return object
+     */
+    public function getUsers(){
+        require_once JPATH_ADMINISTRATOR .DS. 'components' .DS.'com_users'.DS.'models'.DS.'users.php';
+        $model=new UsersModelUsers();
+        return $model->getItems();
+    }
+
+    protected function prepareDocument()
 	{
 		$app		= JFactory::getApplication();
 		$menus		= $app->getMenu();

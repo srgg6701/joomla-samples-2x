@@ -7,10 +7,8 @@ jimport('joomla.application.component.controller');
  
 // Get an instance of the controller prefixed by component name
 $controller = JController::getInstance('Sample');
- 
 // Perform the Request task
 $controller->execute(JRequest::getCmd('task'));
- 
 // Redirect if set by the controller
 $controller->redirect();
 
