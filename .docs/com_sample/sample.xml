@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- see also: http://docs.joomla.org/Manifest_files -->
+<extension type="component" version="joomla_version" method="upgrade">
+	<!-- Metadata start -->
+	<name>com_sample</name>
+    <author>srgg</author>
+	<creationDate>Дата создания</creationDate>
+	<copyright>Copyright (C) info.</copyright>
+	<license>*optional*</license>
+	<authorEmail>srgg67@gmail.com</authorEmail>
+	<authorUrl>http://www.facebook.com/srgg67</authorUrl>
+	<version>1.0.0</version>
+	<description>Описание компонента</description>
+	<!-- Metadata end -->
+	
+	<!-- SQL -->
+	<!-- Runs on install -->
+	<!--
+	<install folder="administrator">
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+	-->
+    <!-- Queries to uninstal data -->
+	<!--
+	<uninstall folder="administrator">
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+	-->
+	<!-- Queries to update data -->
+	<!-- 
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+            <schemapath type="sqlsrv">sql/updates/sqlsrv</schemapath>
+        </schemas>
+    </update>
+	-->
+
+	<!-- Frontend files -->
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>controller.php</filename>
+		<filename>router.php</filename>
+		<filename>sample.php</filename>
+		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	
+	<!-- Backend files -->
+	<administration>
+		<!-- Backend menu -->
+		<menu img="class:sample">COM_SAMPLE</menu>
+		<!-- Backend submenu -->
+		<!--
+		<submenu>
+                <menu link="anoption=avalue">COM_SAMPLE_SUBMENU_ANOPTION</menu>
+                <menu view="viewname">COM_SAMPLE_SUBMENU_VIEWNAME</menu>
+        </submenu>
+		-->
+		<files folder="administrator">
+			<!-- files -->
+			<filename>index.html</filename>
+			<filename>sample.php</filename>
+			<filename>controller.php</filename>
+			<!-- folders -->
+			<folder>assets</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+	</administration>	
+		
+	<!-- Languages -->
+	<!-- Front end -->
+	<languages folder="site">
+		<language tag="ru-RU">language/ru-RU.com_sample.ini</language>
+	</languages>		
+	
+	<!-- Back end -->
+	<languages folder="administrator">
+			<language tag="ru-RU">language/ru-RU.com_sample.ini</language>
+			<language tag="ru-RU">language/ru-RU.com_sample.sys.ini</language>
+	</languages>
+	
+</extension>
+
