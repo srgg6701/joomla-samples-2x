@@ -55,7 +55,6 @@ defined('_JEXEC') or die('Restricted access');
             <th>group_names</th>
         </tr>
     <?php   foreach($this->users as $forum_user_id=>$user):
-                // id, name, username, email, group_count, group_names
     ?>
         <tr>
             <td><?php echo $user['user_id'];?></td>
@@ -64,7 +63,8 @@ defined('_JEXEC') or die('Restricted access');
             <td><?php echo $user['email'];?></td>
             <td><?php
                 $groups_data = explode("\n",$user['group_names']);
-                foreach($groups_data as $group_data){
+                foreach($groups_data as $i=>$group_data){
+                    if($i) echo ", ";
                     $gdata=explode(':',$group_data);
                     echo '<span data-group-id="' . $gdata[0] . '">' .
                         $gdata[1] . '</span>';
@@ -108,12 +108,15 @@ $(function(){
           .each(function(index,element){
             var tr=$(element).parents('tr'),
                 user_id=$('td:first-child', tr).text(),
-                current_group = $(element).val();
+                current_group = $(element).val(),
+                old_group_id = $(element).parent().prev().attr('data-group-id'),
+                groups = [old_group_id,current_group];
             //console.dir(tr);
+
             if(!usersData[user_id]){
-                usersData[user_id]=[current_group];
+                usersData[user_id]=[groups];
             }else{
-                usersData[user_id].push(current_group);
+                usersData[user_id].push(groups);
             }
         });
         console.dir(usersData);

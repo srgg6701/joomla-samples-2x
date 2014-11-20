@@ -25,45 +25,87 @@ class SampleModelSample extends JModelLegacy
      * Обработать запрос изменения группы юзера
      */
     public function manageUserGroups($users_data){
-        // {"584":["3"],"589":["5","6"]}
         $users = json_decode($users_data);
-        /*object(stdClass)#157 (2) {
-          ["584"]=>
-          array(1) {
-            [0]=>
-            string(1) "2"
-          }
-          ["585"]=>
+        var_dump('<pre>',$users,'</pre>');
+        //object(stdClass)#157 (2)
+          /*["586"]=>
           array(2) {
             [0]=>
-            string(1) "3"
+            array(2) {
+              [0]=>
+              string(1) "4"
+              [1]=>
+              string(1) "7"
+            }
             [1]=>
-            string(1) "5"
-          }
-        }*/
-        /*
+            array(2) {
+              [0]=>
+              string(1) "5"
+              [1]=>
+              string(1) "3"
+            }
+          }*/
+          /*
+          ["589"]=>
+          array(1) {
+            [0]=>
+            array(2) {
+              [0]=>
+              string(1) "2"
+              [1]=>
+              string(1) "3"
+            }
+          }*/
+
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        foreach($users as $user_id=>$user_groups){
+            foreach($user_groups as $i=>$groups) {
+                // 0 - id старой группы
+                // 1 - id новой группы
+                $query->select('COUNT(*)')
+                    ->from('#__usergroups')
+                    ->where('user_id = ' . $user_id . ' AND group_id = ' . $groups[0]);
+
+            }
+        }
+    }
+
+    /**
+     * Получить юзеров форума
+     */
+    public function getForumUsers(){
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
         $query->select('ug.title,
   usrs_forum.id AS forum_user_id,
   users.id AS user_id,
   users.name,
   users.username,
-  users.email')
+  users.email,
+  ugmp.group_id')
             ->from('#__usergroups AS ug')
             ->innerJoin('#__user_usergroup_map AS ugmp ON ug.id = ugmp.group_id')
             ->innerJoin('#__users AS users ON ugmp.user_id = users.id')
             ->innerJoin('#__users_forum AS usrs_forum ON usrs_forum.user_id = users.id')
             ->order('ugmp.group_id');
         $db->setQuery($query);
-        $users=$db->loadObjectList();*/
-        $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
-        foreach($users as $user_id=>$user_groups){
-            $query->select('group_id')
-                ->from('#__usergroups')
-                ->where('user_id = ' . $user_id);
+        $users=$db->loadObjectList();
+        $users_data=array();
+        foreach($users as $user_data){
+            $forum_user_id=$user_data->forum_user_id;
+            if(!$users_data[$forum_user_id]){
+                $users_data[$forum_user_id]['user_id']=$user_data->user_id;
+                $users_data[$forum_user_id]['name']=$user_data->name;
+                $users_data[$forum_user_id]['username']=$user_data->username;
+                $users_data[$forum_user_id]['email']=$user_data->email;
+                $users_data[$forum_user_id]['group_names']=$user_data->group_id.':'.$user_data->title;
+            }else{
+                $users_data[$forum_user_id]['group_names'].="\n".$user_data->group_id.':'.$user_data->title;
+            }
         }
+        return $users_data;
     }
-
     /**
 	 * Model context string.
 	 *
@@ -111,4 +153,16 @@ class SampleModelSample extends JModelLegacy
 		$params = $app->getParams();
 		$this->setState('params', $params);
 	}
+
+    /**
+     * Получим список групп юзеров
+     * @return array
+     */
+    public function getUsersGroup(){
+        $db =JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('id, title')->from('#__usergroups');
+        $db->setQuery($query);
+        return $db->loadObjectList();
+    }
 }
