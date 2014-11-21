@@ -1,3 +1,4 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
     $(function(){
         var user_groups='<select class="groups_list">';
@@ -84,25 +85,32 @@
                         });
                         $('#table-container').append(rmess);
 
-                        var str_end = ' группу юзера id ';
+                        var usrid = ' юзера id ',
+                            str_end = ' группу' + usrid,
+                            error_message;
                         //
                         for(var i in errors){
                             var obj = errors[i];
                             if(typeof(obj)==='object' && obj!==null){
                                 //console.dir(obj);
-                                if(obj[1]==='l'){
-                                    $(rmess).append('<div class="mess-err">Нельзя удалить последнюю'+str_end+obj[0]+'</div>');
-                                    //console.log('Нельзя удалить последнюю'+str_end+obj[0]);
+                                switch (obj[1]){
+                                    case 'l': // L
+                                        error_message='Нельзя удалить последнюю'+str_end+obj[0];
+                                        break;
+                                    case 's':
+                                        error_message='Нельзя удалить единственную'+str_end+obj[0];
+                                        break;
+                                    case 'r':
+                                        error_message='Нельзя дважды назначить одну и ту же группу для '+usrid+obj[0];
+                                        break;
+                                    case 'delete':
+                                        error_message='Ошибка удаления группы '+usrid+obj[0];
+                                        break;
+                                    case 'update':
+                                        error_message='Ошибка обновления группы '+usrid+obj[0];
+                                        break;
                                 }
-                                if(obj[1]==='s'){
-                                    $(rmess).append('<div class="mess-err">Нельзя удалить единственную'+str_end+obj[0]+'</div>');
-                                    //console.log('Нельзя удалить единственную'+str_end+obj[0]);
-                                }
-                                if(obj[1]==='r'){
-                                    $(rmess).append('<div class="mess-err">Нельзя дважды назначить одну и ту же'+str_end+obj[0]+'</div>');
-                                    //console.log('Нельзя удалить единственную'+str_end+obj[0]);
-                                }
-
+                                $(rmess).append('<div class="mess-err">'+error_message+'</div>');
                             }
                         }
                     }

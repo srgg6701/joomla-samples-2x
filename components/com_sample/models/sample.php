@@ -22,11 +22,10 @@ JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
 class SampleModelSample extends JModelLegacy
 {
     /**
-     * Обработать запрос изменения группы юзера
+     * Обработать запрос изменения групп юзера
      */
     public function manageUserGroups($users_data){
         $users = json_decode($users_data);
-        //var_dump('<pre>',$users,'</pre>');
         //object(stdClass)#157 (2)
           /*["586"]=>
           array(2) {
@@ -68,7 +67,6 @@ class SampleModelSample extends JModelLegacy
             $db->setQuery($query);
             $count_user_groups = $db->loadResult();
             $deleted=0; // счётчик удалённых групп юзера
-            //echo "\n" . __FILE__ . ':' . __LINE__ . "\n";var_dump($user_groups);echo "\n*****************\n";
             /*
                 array(1) {
                   [0]=>
@@ -97,11 +95,11 @@ class SampleModelSample extends JModelLegacy
                 }
             */
             foreach($user_groups as $i=>$groups) {
-                //echo "\n" . __FILE__ . ':' . __LINE__ . "\ngroups:\n";var_dump($groups);echo "\n*****************\n";
-                // 0 - id старой группы
-                // 1 - id новой группы
+                // [0] - id старой группы
+                // [1] - id новой группы
                 $condition = 'user_id = ' . $user_id . ' AND group_id = ' . $groups[0];
-                if($groups[1]=='-1'){ // удалить группу
+                // удалить группу
+                if($groups[1]=='-1'){
                     //echo "\nDelete group!\n";
                     if($count_user_groups>1){ // если групп более 1, тогда можно удалять
                         // и если удалено меньше, чем всего групп юзера +1
@@ -109,10 +107,12 @@ class SampleModelSample extends JModelLegacy
                             $query = $db->getQuery(true);
                             $query->delete($table_name)->where($condition);
                             $db->setQuery($query);
-                            // $result = $db->execute();
-                            $deleted++;
-                            $results[]=array('user_id'=>$user_id,'deleted'=>$groups[0]);
-                                //"Deleted group $groups[0] of user $user_id";
+                            if(!$result = $db->execute())
+                                $errors[]=array($user_id,"delete");
+                            else{
+                                $deleted++;
+                                $results[]=array('user_id'=>$user_id,'deleted'=>$groups[0]);
+                            }
                         }else{
                             $errors[]=array($user_id,"l");
                         }
@@ -126,10 +126,9 @@ class SampleModelSample extends JModelLegacy
                         ->from($table_name)
                         ->where($condition);
                     $db->setQuery($query);
-                    //echo "\nSELECT COUNT(*) FROM $table_name WHERE $condition\n result: " . $db->loadResult() . "\n";
                     if($db->loadResult()){
                         //echo "<div>The record exists</div>\n";
-                        // проверить, не назначается ли группа повторно:
+                        // проверить, не назначается ли группа повторно
                         $query = $db->getQuery(true);
                         $query->select('COUNT(*)')
                             ->from($table_name)
@@ -137,28 +136,28 @@ class SampleModelSample extends JModelLegacy
                         $db->setQuery($query);
                         if($db->loadResult()){
                             $errors[]=array($user_id,"r");
-                        }else{
+                        }else{ // если нет - обновить # группы
                             $query = $db->getQuery(true);
                             $query->update($table_name)
                                 ->set('group_id = ' . $groups[1])
                                 ->where($condition);
                             $db->setQuery($query);
-                            // $result = $db->execute();
-                            $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
+                            if(!$result = $db->execute())
+                                $errors[]=array($user_id,"update");
+                            else
+                                $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
                         }
-                        //"Group of user $user_id has changed from $groups[0] to $groups[1]";
                     }else{
                         $errors[]=array($user_id,"n");
                     }
                 }
             }
         }
-        //echo "\n" . __FILE__ . ':' . __LINE__ . "\n";var_dump($results);echo "\n*****************\n"; die();
         return array('results'=>$results, 'errors'=>$errors);
     }
 
     /**
-     * Получить юзеров форума
+     * Получить юзеров форума и их данные как обычных юзеров Joomla
      */
     public function getForumUsers(){
         $db = JFactory::getDbo();
