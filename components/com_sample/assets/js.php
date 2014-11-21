@@ -1,7 +1,12 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
     $(function(){
-        var user_groups='<select class="groups_list">';
+        var rmess_id = 'result-message',
+            // удаление контейнера с сообщениями об ошибках:
+            removeMessContainer = function(){
+                $('#'+rmess_id).remove();
+            },
+            user_groups='<select class="groups_list">';
         <?php
         foreach($this->usergroups as $i=>$group_data):?>
         user_groups+='<option value="<?php echo $group_data->id;?>">';
@@ -17,12 +22,6 @@
             var tSelect = $(this).next()[0],
                 opt = $('option:contains('+$(this).text()+')', tSelect);
             tSelect.options[$(opt).index()].selected=true
-        });
-        // отменить выбор группы
-        $('.common').on('click', '.close',function(event){
-            $(event.currentTarget).prev().prev().show();
-            $(event.currentTarget).prev().remove();
-            $(event.currentTarget).remove();
         });
         // подтвердить смену группы юзера
         $('#btn-apply').on('click', function(){
@@ -41,6 +40,8 @@
                         usersData[user_id].push(groups);
                     }
                 }); //console.dir(usersData);
+            //---------------------------------------------------------------
+            // отправить данные PHP-обработчику
             $.post(
                 "index.php?option=com_sample",
                 {
@@ -53,8 +54,7 @@
                         errors = rslts['errors'];
                     //console.group();console.dir(rslts);console.log(results.length,errors.length);console.groupEnd();
                     // удалить контейнер с сообщением
-                    var rmess_id = 'result-message';
-                    $('#'+rmess_id).remove();
+                    removeMessContainer();
                     // если получили результаты
                     if(results.length){
                         for(var i in results){
@@ -70,6 +70,7 @@
                                         $(element).prev()
                                             .attr('data-group-id',gId)
                                             .text(gText)
+                                            .css('color','#E500D1')
                                             .show();
                                         $(element).next().remove(); // div.close
                                         $(element).remove(); // удалить сам список
@@ -110,11 +111,22 @@
                                         error_message='Ошибка обновления группы '+usrid+obj[0];
                                         break;
                                 }
-                                $(rmess).append('<div class="mess-err">'+error_message+'</div>');
+                                $(rmess).append('<div class="mess-err">'+error_message+'</div><div class="close parent">x</div>');
                             }
                         }
                     }
                 });
+        });
+        // отменить выбор группы, убрать сообщение
+        $('.container-div').on('click', '.close',function(event){
+            if(!$(event.currentTarget).hasClass('parent'))
+                $(event.currentTarget).prev().prev().show();
+            $(event.currentTarget).prev().remove();
+            $(event.currentTarget).remove();
+            if($(event.currentTarget).hasClass('parent')){
+                if(!$('.mess-err').size())
+                    removeMessContainer();
+            }
         });
     });
 </script>

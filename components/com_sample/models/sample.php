@@ -100,34 +100,40 @@ class SampleModelSample extends JModelLegacy
                 $condition = 'user_id = ' . $user_id . ' AND group_id = ' . $groups[0];
                 // удалить группу
                 if($groups[1]=='-1'){
-                    //echo "\nDelete group!\n";
+                    //echo "\n".__LINE__."Delete the group\n";
                     if($count_user_groups>1){ // если групп более 1, тогда можно удалять
+                        //echo "\n".__LINE__."User has more than 1 group";
                         // и если удалено меньше, чем всего групп юзера +1
                         if($deleted<$count_user_groups-1){
+                            //echo "\n".__LINE__."deleting...";
                             $query = $db->getQuery(true);
                             $query->delete($table_name)->where($condition);
                             $db->setQuery($query);
-                            if(!$result = $db->execute())
+                            if(!$result = $db->execute()){
+                                //echo "\n".__LINE__."error while deleting...";
                                 $errors[]=array($user_id,"delete");
-                            else{
+                            }else{
+                                //echo "\n".__LINE__."deleted. Increase the counter of deletions";
                                 $deleted++;
                                 $results[]=array('user_id'=>$user_id,'deleted'=>$groups[0]);
                             }
                         }else{
+                            //echo "\n".__LINE__."Error: the groups deletion limit is exceeded...";
                             $errors[]=array($user_id,"l");
                         }
                     }else{
+                        //echo "\n".__LINE__."Error: user has only one group";
                         $errors[]=array($user_id,"s");
                     }
                 }else{ // обновить
-                    echo "\n".__LINE__."Изменить группу\n";
+                    //echo "\n".__LINE__."Change the group\n";
                     $query = $db->getQuery(true);
                     $query->select('COUNT(*)')
                         ->from($table_name)
                         ->where($condition);
                     $db->setQuery($query);
                     if($db->loadResult()){
-                        echo "\n".__LINE__."Запись с группой, подлежащей изменению, обнаружена";
+                        //echo "\n".__LINE__."The record to change the group is found";
                         // проверить, не назначается ли группа повторно
                         $query = $db->getQuery(true);
                         $query->select('COUNT(*)')
@@ -135,24 +141,26 @@ class SampleModelSample extends JModelLegacy
                             ->where('user_id = ' . $user_id . ' AND group_id = ' . $groups[1]);
                         $db->setQuery($query);
                         if($db->loadResult()){
+                            //echo "\n".__LINE__."Error: can not apply the same group...";
                             $errors[]=array($user_id,"r");
                         }else{ // если нет - обновить # группы
-                            echo "\n".__LINE__."Обновить...";
+                            //echo "\n".__LINE__."updating...";
                             $query = $db->getQuery(true);
                             $query->update($table_name)
                                 ->set('group_id = ' . $groups[1])
                                 ->where($condition);
                             $db->setQuery($query);
                             if(!$result = $db->execute()){
-                                echo "\n".__LINE__."Ошибка обновления записи";
+                                //echo "\n".__LINE__."error while updating...";
                                 $errors[]=array($user_id,"update");
                             }
                             else{
-                                echo "\n".__LINE__."Обновлено!";
+                                //echo "\n".__LINE__."updated";
                                 $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
                             }
                         }
                     }else{
+                        //echo "\n".__LINE__."Error: no record to change the group";
                         $errors[]=array($user_id,"n");
                     }
                 }

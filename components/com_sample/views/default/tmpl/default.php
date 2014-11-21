@@ -1,9 +1,11 @@
 <?
 defined('_JEXEC') or die('Restricted access');
-	if ($this->params->get('show_page_heading')) : 
+$req_path=dirname(__FILE__).'/../../../assets/';
+?>
+<?php
+	if ($this->params->get('show_page_heading')) :
 	?><h1><?php echo $this->escape($this->params->get('page_heading')); ?></h1>
 <?php endif;
-    $req_path=dirname(__FILE__).'/../../../assets/';
     require_once $req_path . 'css.php';
     require_once $req_path . 'js.php';
 ?>

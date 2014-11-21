@@ -29,6 +29,9 @@
     .groups_list{
         margin: -2px -5px;
     }
+    .mess-err{
+        display: inline-block;
+    }
     #btn-apply{
         float: right;
         margin-top: 4px;
