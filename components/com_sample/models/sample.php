@@ -120,14 +120,14 @@ class SampleModelSample extends JModelLegacy
                         $errors[]=array($user_id,"s");
                     }
                 }else{ // обновить
-                    //echo "\nUpdate group!\n";
+                    echo "\n".__LINE__."Изменить группу\n";
                     $query = $db->getQuery(true);
                     $query->select('COUNT(*)')
                         ->from($table_name)
                         ->where($condition);
                     $db->setQuery($query);
                     if($db->loadResult()){
-                        //echo "<div>The record exists</div>\n";
+                        echo "\n".__LINE__."Запись с группой, подлежащей изменению, обнаружена";
                         // проверить, не назначается ли группа повторно
                         $query = $db->getQuery(true);
                         $query->select('COUNT(*)')
@@ -137,15 +137,20 @@ class SampleModelSample extends JModelLegacy
                         if($db->loadResult()){
                             $errors[]=array($user_id,"r");
                         }else{ // если нет - обновить # группы
+                            echo "\n".__LINE__."Обновить...";
                             $query = $db->getQuery(true);
                             $query->update($table_name)
                                 ->set('group_id = ' . $groups[1])
                                 ->where($condition);
                             $db->setQuery($query);
-                            if(!$result = $db->execute())
+                            if(!$result = $db->execute()){
+                                echo "\n".__LINE__."Ошибка обновления записи";
                                 $errors[]=array($user_id,"update");
-                            else
+                            }
+                            else{
+                                echo "\n".__LINE__."Обновлено!";
                                 $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
+                            }
                         }
                     }else{
                         $errors[]=array($user_id,"n");
