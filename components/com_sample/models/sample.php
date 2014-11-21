@@ -113,13 +113,10 @@ class SampleModelSample extends JModelLegacy
                             $deleted++;
                             $results[]=array('user_id'=>$user_id,'deleted'=>$groups[0]);
                                 //"Deleted group $groups[0] of user $user_id";
-                            //$errors[]=null;
                         }else{
-                            //$results[]=null;
                             $errors[]=array($user_id,"l");
                         }
                     }else{
-                        //$results[]=null;
                         $errors[]=array($user_id,"s");
                     }
                 }else{ // обновить
@@ -132,17 +129,25 @@ class SampleModelSample extends JModelLegacy
                     //echo "\nSELECT COUNT(*) FROM $table_name WHERE $condition\n result: " . $db->loadResult() . "\n";
                     if($db->loadResult()){
                         //echo "<div>The record exists</div>\n";
+                        // проверить, не назначается ли группа повторно:
                         $query = $db->getQuery(true);
-                        $query->update($table_name)
-                            ->set('group_id = ' . $groups[1])
-                            ->where($condition);
+                        $query->select('COUNT(*)')
+                            ->from($table_name)
+                            ->where('user_id = ' . $user_id . ' AND group_id = ' . $groups[1]);
                         $db->setQuery($query);
-                        // $result = $db->execute();
-                        $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
+                        if($db->loadResult()){
+                            $errors[]=array($user_id,"r");
+                        }else{
+                            $query = $db->getQuery(true);
+                            $query->update($table_name)
+                                ->set('group_id = ' . $groups[1])
+                                ->where($condition);
+                            $db->setQuery($query);
+                            // $result = $db->execute();
+                            $results[]= array('user_id'=>$user_id,'updated'=>array($groups[0],$groups[1]));
+                        }
                         //"Group of user $user_id has changed from $groups[0] to $groups[1]";
-                        //$errors[]=null;
                     }else{
-                        //$results[]=null;
                         $errors[]=array($user_id,"n");
                     }
                 }

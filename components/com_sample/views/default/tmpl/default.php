@@ -139,22 +139,36 @@ $(function(){
             // удалить контейнер с сообщением
             var rmess_id = 'result-message';
             $('#'+rmess_id).remove();
-            // создать новый контейнер для сообщений
-            var rmess = $('<div/>',{
-                id:rmess_id
-            });
-            $('#table-container').append(rmess);
-
+            // если получили результаты
             if(results.length){
                 for(var i in results){
                     var obj = results[i];
                     if(typeof(obj)==='object' && obj!==null){
-                        console.dir(obj);
+                        // получить активные списки выбора
+                        $('td:contains('+obj['user_id']+')').parent('tr').find('select')
+                            .each(function(index,element){
+                                var sGr = $('option:selected',element),
+                                    gText = $(sGr).text(),
+                                    gId = $(sGr).val(); //console.log(gId,gText);
+                                // обработать span перед списком
+                                $(element).prev()
+                                    .attr('data-group-id',gId)
+                                    .text(gText)
+                                    .show();
+                                $(element).next().remove(); // div.close
+                                $(element).remove(); // удалить сам список
+                            });
                     }
-                    //if(key=='results')
                 }
             }
+            // если есть ошибки
             if(errors.length){
+                // создать новый контейнер для сообщений
+                var rmess = $('<div/>',{
+                    id:rmess_id
+                });
+                $('#table-container').append(rmess);
+
                 var str_end = ' группу юзера id ';
                 //
                 for(var i in errors){
@@ -169,6 +183,11 @@ $(function(){
                             $(rmess).append('<div class="mess-err">Нельзя удалить единственную'+str_end+obj[0]+'</div>');
                             //console.log('Нельзя удалить единственную'+str_end+obj[0]);
                         }
+                        if(obj[1]==='r'){
+                            $(rmess).append('<div class="mess-err">Нельзя дважды назначить одну и ту же'+str_end+obj[0]+'</div>');
+                            //console.log('Нельзя удалить единственную'+str_end+obj[0]);
+                        }
+
                     }
                 }
             }
