@@ -41,8 +41,10 @@ class SampleController extends JControllerLegacy
      * Изменить группу юзера
      */
     public function change_user_group(){
-        $post=JRequest::get('post');
-        echo json_encode($this->getModel()->manageUserGroups($post['users']));
+        echo 'Got user_id: ' . JRequest::getVar('user_id');
         exit;
+        //$post=JRequest::get('post');
+        //echo json_encode($this->getModel()->manageUserGroups($post['users']));
+        //exit;
     }
 }

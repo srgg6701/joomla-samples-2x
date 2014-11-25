@@ -648,10 +648,11 @@ class JFilterInput extends JObject
 			}
 		}
 		$source = strtr($source, $ttr);
+        // todo: заменить устаревшие функции, убрать подавление вывода об ошибках
 		// Convert decimal
-		$source = preg_replace('/&#(\d+);/me', "utf8_encode(chr(\\1))", $source); // decimal notation
+		$source = @preg_replace('/&#(\d+);/me', "utf8_encode(chr(\\1))", $source); // decimal notation
 		// Convert hex
-		$source = preg_replace('/&#x([a-f0-9]+);/mei', "utf8_encode(chr(0x\\1))", $source); // hex notation
+		$source = @preg_replace('/&#x([a-f0-9]+);/mei', "utf8_encode(chr(0x\\1))", $source); // hex notation
 		return $source;
 	}
 
