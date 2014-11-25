@@ -263,4 +263,49 @@ class SampleModelSample extends JModelLegacy
         $db->setQuery($query);
         return $db->loadObjectList();
     }
+    /**
+     *  Изменить группу юзера
+     */
+    public function changeUsersGroup($user_id){
+        $user_group = '2';// присваеваемая группа
+        // получить юзера joomla:
+        $db =JFactory::getDbo();
+        $query="UPDATE #__user_usergroup_map SET group_id = " . $user_group . "
+  WHERE user_id =(
+        SELECT #__users.id
+        FROM #__users
+          INNER JOIN phpbb_users
+            ON #__users.username = phpbb_users.username
+          WHERE #__users.username = (
+            SELECT username FROM phpbb_users WHERE user_id = " . $user_id . "
+          )
+)";
+        /*$query->update('#__user_usergroup_map')
+            ->set('group_id = ' . $user_group)
+            ->where("SELECT
+  #__users.id
+FROM #__users
+  INNER JOIN phpbb_users
+    ON #__users.username = phpbb_users.username
+  WHERE #__users.username = (
+    SELECT username FROM phpbb_users WHERE user_id = " . $user_id . "
+  )");
+        $query = $db->getQuery(true);
+        */
+        $db->setQuery($query);
+        return $db->execute();
+    }
+
+    /**
+     * Получить имя юзера по его id forum
+     */
+    public function getUserName($user_id){
+        $db =JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('username')
+            ->from('phpbb_users')
+            ->where('user_id = ' . $user_id);
+        $db->setQuery($query);
+        return $db->loadResult();
+    }
 }
